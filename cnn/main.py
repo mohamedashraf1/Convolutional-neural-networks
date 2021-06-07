@@ -19,10 +19,6 @@ def get_data():
     x_train = np.expand_dims(x_train, -1)
     x_test = np.expand_dims(x_test, -1)
 
-    # print("x_train shape:", x_train.shape)
-    # print(x_train.shape[0], "train samples")
-    # print(x_test.shape[0], "test samples")
-
     # convert class vectors to binary class matrices
     y_train = keras.utils.to_categorical(y_train, num_classes)
     y_test = keras.utils.to_categorical(y_test, num_classes)
@@ -52,6 +48,7 @@ def train_model(model, x_train, y_train):
     model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
 
     model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, validation_split=0.1)
+    return model
 
 
 def evaluate_model(model, x_test, y_test):
@@ -60,36 +57,37 @@ def evaluate_model(model, x_test, y_test):
     print("Test accuracy:", score[1])
 
 
-# run starts at 5:36
-myModel = generate_model()
-# myModel.summary()
-(x_train, y_train), (x_test, y_test) = get_data()
-train_model(myModel, x_train, y_train)
-evaluate_model(myModel,x_test, y_test)
-# run ends at 5:44
+def save_model(model, fileName):
+    model.save(fileName)
 
-#
-# def generate_model():
-#     model = tf.keras.Sequential()
-#     # input shape:  H, W, number of channels
-#     model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
-#     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-#
-#     model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
-#     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-#
-#     model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
-#     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-#
-#     model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
-#     # model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-#
-#     # model.add(tf.keras.layers.Flatten())
-#     #
-#     # model.add(tf.keras.layers.Dense(512, activation='relu'))
-#     # model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
-#
-#     # model.compile()
-#     # This builds the model for the first time: model.fit(x, y, batch_size=32, epochs=10) `
-#     return model
-#
+
+def load_model(fileName):
+    model = keras.models.load_model(fileName)
+    return model
+
+
+model_file_name = "D:/College/4th year/second term/Computer Vision/Assignments/ass 2/Convolutional-neural-networks/cnn/model.hdf5"
+trained_file_name = "D:/College/4th year/second term/Computer Vision/Assignments/ass 2/Convolutional-neural-networks/cnn/trained.hdf5"
+
+# # generate the model and save it in a file    ---- 1
+# myModel = generate_model()
+# save_model(myModel, model_file_name)
+# # myModel.summary()
+
+# load the model to be used      ---- 2.1
+# loaded_model = load_model(model_file_name)
+# loaded_model.summary()
+
+# # train the model and save it again    ---- 2.2
+# (x_train, y_train), (x_test, y_test) = get_data()
+# trained_model = train_model(loaded_model, x_train, y_train)
+# save_model(trained_model, trained_file_name)
+
+# # load the final model and evaluate the results    ----- 3
+# final_model = load_model(trained_file_name)
+# final_model.summary()
+# print("Test Data: ")
+# evaluate_model(final_model, x_test, y_test)
+# print("Train Data: ")
+# evaluate_model(final_model, x_train, y_train)
+
